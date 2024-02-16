@@ -120,6 +120,7 @@ fun ArticleCard(
             ArticleImage(
                 article = article,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 5.dp, vertical = 5.dp)
             )
             val density = LocalDensity.current.density
@@ -157,7 +158,6 @@ fun ArticleImage(
         contentDescription = "${article.title} id ${article.id}",
         contentScale = ContentScale.Crop,
         modifier = modifier
-            .fillMaxWidth()
             .aspectRatio(1.0f)
     )
 }
