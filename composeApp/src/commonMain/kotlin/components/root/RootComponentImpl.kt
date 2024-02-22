@@ -3,17 +3,12 @@ package components.root
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
-
 import com.arkivanov.decompose.value.Value
-import components.details.DetailsComponent
-import components.details.DetailsComponentImpl
-import components.list.ListComponent
-import components.list.ListComponentImpl
+import components.favourites.FavouritesComponentImpl
+import components.homeFlow.HomeFlowComponentImpl
 import kotlinx.serialization.Serializable
-import models.Article
 
 class RootComponentImpl(
     componentContext: ComponentContext
@@ -23,44 +18,34 @@ class RootComponentImpl(
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = Config.List,
+            initialConfiguration = Config.HomeFlow,
             handleBackButton = true,
             childFactory = ::child,
         )
 
-    private fun child(config: Config, childComponentContext: ComponentContext): RootComponent.Child =
+    override fun onHomeTabClicked() {
+        navigation.bringToFront(Config.HomeFlow)
+    }
+
+    override fun onFavouritesTabClicked() {
+        navigation.bringToFront(Config.Favourites)
+    }
+
+    private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
-            is Config.List -> RootComponent.Child.List(listComponent(childComponentContext))
-            is Config.Details -> RootComponent.Child.Details(detailsComponent(config, childComponentContext))
+            is Config.HomeFlow -> RootComponent.Child.HomeFlowChild(HomeFlowComponentImpl(componentContext))
+            is Config.Favourites -> RootComponent.Child.FavouritesChild(FavouritesComponentImpl(
+                componentContext = componentContext,
+                onListItemClicked = {}
+            ))
         }
-
-    private fun listComponent(
-        componentContext: ComponentContext
-    ): ListComponent =
-        ListComponentImpl(
-            componentContext = componentContext,
-            onListItemClicked = {article ->
-                navigation.push(Config.Details(article = article))
-            },
-        )
-
-    private fun detailsComponent(
-        config: Config.Details,
-        componentContext: ComponentContext
-    ): DetailsComponent =
-        DetailsComponentImpl(
-            componentContext = componentContext,
-            article = config.article,
-            onBackButtonClicked = navigation::pop,
-        )
 
     @Serializable
     private sealed interface Config {
         @Serializable
-        data object List : Config
+        data object HomeFlow : Config
 
         @Serializable
-        data class Details(val article: Article) : Config
+        data object Favourites : Config
     }
-
 }
