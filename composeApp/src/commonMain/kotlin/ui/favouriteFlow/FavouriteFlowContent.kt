@@ -1,4 +1,4 @@
-package ui.home
+package ui.favouriteFlow
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,28 +12,28 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import components.homeFlow.HomeFlowComponent
+import components.favouriteFlow.FavouriteFlowComponent
 import ui.details.DetailsContent
-import ui.list.ListContent
+import ui.favourites.FavouritesContent
 
 @Composable
-fun HomeContent(
-    component: HomeFlowComponent,
+fun FavouriteFlowContent(
+    component: FavouriteFlowComponent,
     modifier: Modifier = Modifier,
 ) {
     MaterialTheme {
         Surface(modifier = modifier.fillMaxSize().windowInsetsPadding(WindowInsets.systemBars)) {
             Children(
-                stack = component.stack,
+                stack = component.childStack,
                 modifier = Modifier.fillMaxSize(),
 //                animation = stackAnimation(fade() + scale())
                 animation = stackAnimation(slide(orientation = Orientation.Horizontal))
             ) {
                 when (val instance = it.instance) {
-                    is HomeFlowComponent.Child.List -> ListContent(
+                    is FavouriteFlowComponent.Child.Favourites -> FavouritesContent(
                         component = instance.component,
                     )
-                    is HomeFlowComponent.Child.Details -> DetailsContent(component = instance.component)
+                    is FavouriteFlowComponent.Child.Details -> DetailsContent(component = instance.component)
                 }
             }
         }

@@ -6,6 +6,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
+import components.favouriteFlow.FavouriteFlowComponent
+import components.favouriteFlow.FavouriteFlowComponentImpl
 import components.favourites.FavouritesComponentImpl
 import components.homeFlow.HomeFlowComponentImpl
 import kotlinx.serialization.Serializable
@@ -28,15 +30,16 @@ class RootComponentImpl(
     }
 
     override fun onFavouritesTabClicked() {
-        navigation.bringToFront(Config.Favourites)
+        navigation.bringToFront(Config.FavouritesFlow)
     }
 
     private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
-            is Config.HomeFlow -> RootComponent.Child.HomeFlowChild(HomeFlowComponentImpl(componentContext))
-            is Config.Favourites -> RootComponent.Child.FavouritesChild(FavouritesComponentImpl(
+            is Config.HomeFlow -> RootComponent.Child.HomeFlowChild(HomeFlowComponentImpl(
+                componentContext = componentContext
+            ))
+            is Config.FavouritesFlow -> RootComponent.Child.FavouritesFlowChild(FavouriteFlowComponentImpl(
                 componentContext = componentContext,
-                onListItemClicked = {}
             ))
         }
 
@@ -46,6 +49,6 @@ class RootComponentImpl(
         data object HomeFlow : Config
 
         @Serializable
-        data object Favourites : Config
+        data object FavouritesFlow : Config
     }
 }

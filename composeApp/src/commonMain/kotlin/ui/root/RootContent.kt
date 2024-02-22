@@ -25,8 +25,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 
 import components.root.RootComponent
+import ui.favouriteFlow.FavouriteFlowContent
 import ui.favourites.FavouritesContent
-import ui.home.HomeContent
+import ui.homeFlow.HomeContent
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
@@ -56,7 +57,7 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
     ) {
         when (val child = it.instance) {
             is RootComponent.Child.HomeFlowChild -> HomeContent(component = child.component, modifier = Modifier.fillMaxSize())
-            is RootComponent.Child.FavouritesChild -> FavouritesContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is RootComponent.Child.FavouritesFlowChild -> FavouriteFlowContent(component = child.component, modifier = Modifier.fillMaxSize())
         }
     }
 }
@@ -73,18 +74,18 @@ private fun BottomBar(component: RootComponent, modifier: Modifier = Modifier) {
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
-                    contentDescription = "Counters",
+                    contentDescription = "Home",
                 )
             },
         )
 
         BottomNavigationItem(
-            selected = activeComponent is RootComponent.Child.FavouritesChild,
+            selected = activeComponent is RootComponent.Child.FavouritesFlowChild,
             onClick = component::onFavouritesTabClicked,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Favorite,
-                    contentDescription = "Cards",
+                    contentDescription = "Favourites",
                 )
             },
         )
